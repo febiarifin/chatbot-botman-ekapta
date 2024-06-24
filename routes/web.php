@@ -31,6 +31,9 @@ Route::middleware(['auth'])
         Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::resource('questions', QuestionController::class);
         Route::resource('answers', AnswerController::class);
+        Route::post('questions/import', [QuestionController::class, 'import'])->name('questions.import');
+        Route::get('question/export', [QuestionController::class, 'export'])->name('questions.export');
         Route::get('logout', [AuthController::class, 'logout'])->name('logout');
     });
 
+Route::get('ask/{question}', [BotManController::class, 'askOpenAI']);

@@ -7,6 +7,48 @@
                 <h3 class="fw-bold mb-3">{{ $title }}</h3>
             </div>
             <div class="ms-md-auto py-2 py-md-0">
+                 <!-- Button trigger modal -->
+                 <button type="button" class="btn btn-success btn-round" data-bs-toggle="modal" data-bs-target="#importModal">
+                    <i class="fas fa-upload"></i>
+                    Import Dataset</a>
+                </button>
+
+                <a href="{{ route('questions.export') }}" class="btn btn-warning btn-round">
+                    <i class="fas fa-download"></i>
+                    Export Dataset</a>
+                </button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Import Dataset</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <form action="{{ route('questions.import') }}" method="post" enctype="multipart/form-data">
+                                @csrf
+                                <div class="modal-body">
+                                    <div class="alert alert-primary mb-3">
+                                        Download template dataset <a href="https://docs.google.com/spreadsheets/d/1x7AGm7quYMxrhDvjHfs3hnO2vhd7eABvQxMSgbR33jQ/edit?usp=sharing" target="_blank">
+                                            <i class="fas fa-download"></i> Download
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <label>File (Format: .xlsx, .csv)</label>
+                                        <input type="file" class="form-control" name="file" accept=".xlsx, .csv" required>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Button trigger modal -->
                 <button type="button" class="btn btn-primary btn-round" data-bs-toggle="modal" data-bs-target="#addQuestion">
                     <i class="fas fa-plus-circle"></i>

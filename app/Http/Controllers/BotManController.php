@@ -8,6 +8,7 @@ use BotMan\BotMan\Drivers\DriverManager;
 use Illuminate\Http\Request;
 use App\Models\Question;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class BotManController extends Controller
 {
@@ -17,15 +18,21 @@ class BotManController extends Controller
         DriverManager::loadDriver(\BotMan\Drivers\Web\WebDriver::class);
         $config = [];
         $botman = BotManFactory::create($config);
+
         $botman->hears('{question}', function (BotMan $bot, $question) {
-            $bot->typesAndWaits(2);
+            $bot->typesAndWaits(1);
+            $pattern = '/(https?:\/\/[^\s]+)/';
             $question = Question::where('question_text', 'like', '%' . $question . '%')->first();
+
             if ($question) {
                 $question->increment('counter');
+
                 $answers = $question->answers()->pluck('answer_text');
+
                 if (count($answers) != 0) {
                     foreach ($answers as $answer) {
-                        $bot->reply($answer);
+                        $answerWithLinks = preg_replace($pattern, '<a href="$1" target="_blank">$1</a>', $answer);
+                        $bot->reply($answerWithLinks);
                     }
                 } else {
                     $bot->reply('Maaf, jawabannya tidak tersedia saat ini.');
@@ -36,6 +43,7 @@ class BotManController extends Controller
                 // $bot->reply($this->askOpenAI($question));
             }
         });
+
         $botman->listen();
     }
 
@@ -56,6 +64,8 @@ class BotManController extends Controller
             'temperature' => 0.7,
             'max_tokens' => 128,
         ]);
+
+        Log::info($response->json());
 
         if ($response->successful()) {
             $responseData = $response->json();

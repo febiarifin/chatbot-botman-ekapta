@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\QuestionExport;
+use App\Imports\QuestionImport;
 use App\Models\Question;
 use Brian2694\Toastr\Facades\Toastr;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 
 class QuestionController extends Controller
 {
@@ -109,5 +113,21 @@ class QuestionController extends Controller
         $question->delete();
         Toastr::success('Pertanyaan berhasil dihapus', 'Success', ["positionClass" => "toast-top-right"]);
         return back();
+    }
+
+    public function import(Request $request)
+    {
+        try {
+            Excel::import(new QuestionImport, $request->file);
+            Toastr::success('Dataset berhasil diimport', 'Success', ["positionClass" => "toast-top-right"]);
+        } catch (Exception $e) {
+            Toastr::error($e->getMessage(), 'Error', ["positionClass" => "toast-top-right"]);
+        }
+        return back();
+    }
+
+    public function export()
+    {
+        return Excel::download(new QuestionExport, 'EKAPTA_CHATBOT_DATASET.xlsx');
     }
 }
