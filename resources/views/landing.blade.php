@@ -120,7 +120,7 @@
         <div class="row d-flex justify-content-center align-items-center">
             <div class="col-md-8">
                 <div class="mb-3 text-center">
-                    <h3 class="typing" id="welcome-text" style="color: #9a6e1b;"></h3>
+                    <h5 class="typing" id="welcome-text" style="color: #9a6e1b;"></h5>
                 </div>
                 <form id="regForm" action="{{ route('questions.store.contribution') }}" method="post">
                     @csrf
