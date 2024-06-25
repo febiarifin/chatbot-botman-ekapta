@@ -172,32 +172,34 @@
     </div>
 
 
-    <main class="form-signin col-md-6 col-sm-8 m-auto mt-5 card">
-        <div class="card-header text-center">
-            <h3 class="h3 mb-3 fw-normal">EKAPTA CHATBOT ADMIN</h3>
-        </div>
-        <div class="card-body">
-            @if (session('error'))
-                <div class="alert alert-danger">{{ session('error') }}</div>
-            @endif
-            <form action="{{ route('login.store') }}" method="POST">
-                @csrf
-                <div class="form-floating">
-                    <input type="email" class="form-control @error('email') is-invalid @enderror" id="floatingInput"
-                        placeholder="name@example.com" name="email" required>
-                    <label for="floatingInput">Email address</label>
-                    @error('email')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-                <div class="form-floating">
-                    <input type="password" class="form-control" id="floatingPassword" placeholder="Password"
-                        name="password" required>
-                    <label for="floatingPassword">Password</label>
-                </div>
+    <main class="form-signin col-md-6 col-sm-8 m-auto mt-5">
+        <div class="card shadow">
+            <div class="card-header text-center">
+                <h3 class="h3 mb-3 fw-normal">EKAPTA CHATBOT ADMIN</h3>
+            </div>
+            <div class="card-body">
+                @if (session('error'))
+                    <div class="alert alert-danger">{{ session('error') }}</div>
+                @endif
+                <form action="{{ route('login.store') }}" method="POST">
+                    @csrf
+                    <div class="form-floating">
+                        <input type="email" class="form-control @error('email') is-invalid @enderror"
+                            id="floatingInput" placeholder="name@example.com" name="email" required>
+                        <label for="floatingInput">Email address</label>
+                        @error('email')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="form-floating">
+                        <input type="password" class="form-control" id="floatingPassword" placeholder="Password"
+                            name="password" required>
+                        <label for="floatingPassword">Password</label>
+                    </div>
 
-                <button class="btn btn-secondary w-100 py-2 mt-4" type="submit">Sign in</button>
-            </form>
+                    <button class="btn btn-secondary w-100 py-2 mt-4" type="submit">Sign in</button>
+                </form>
+            </div>
         </div>
     </main>
     <script src="{{ asset('bootstrap-example') }}/assets/dist/js/bootstrap.bundle.min.js"></script>

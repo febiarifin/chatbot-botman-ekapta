@@ -37,6 +37,9 @@
     <!-- CSS Just for demo purpose, don't include it in your project -->
     <link rel="stylesheet" href="{{ asset('kaiadmin-lite') }}/assets/css/demo.css" />
     <link rel="stylesheet" href="http://cdn.bootcss.com/toastr.js/latest/css/toastr.min.css">
+
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.0.8/dist/trix.css">
+    <script type="text/javascript" src="https://unpkg.com/trix@2.0.8/dist/trix.umd.min.js"></script>
 </head>
 
 <body>
@@ -141,8 +144,8 @@
                                         <li>
                                             <div class="user-box">
                                                 <div class="avatar-lg">
-                                                    <img src="{{ asset('images/mix-bot.png') }}"
-                                                        alt="image profile" class="avatar-img rounded" />
+                                                    <img src="{{ asset('images/mix-bot.png') }}" alt="image profile"
+                                                        class="avatar-img rounded" />
                                                 </div>
                                                 <div class="u-text">
                                                     <h4>{{ Auth::user()->name }}</h4>

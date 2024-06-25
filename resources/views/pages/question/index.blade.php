@@ -14,9 +14,8 @@
                 </button>
 
                 <a href="{{ route('questions.export') }}" class="btn btn-warning btn-round">
-                    <i class="fas fa-download"></i>
-                    Export Dataset</a>
-                </button>
+                    <i class="fas fa-download"></i> Export Dataset
+                </a>
 
                 <!-- Modal -->
                 <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="exampleModalLabel"

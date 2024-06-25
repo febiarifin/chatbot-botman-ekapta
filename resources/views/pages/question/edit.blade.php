@@ -51,7 +51,8 @@
                                             <div class="modal-body">
                                                 <div>
                                                     <label>Jawaban</label>
-                                                    <textarea class="form-control" name="answer_text" required placeholder="Tulis jawaban..."></textarea>
+                                                    <input id="answer_text" type="hidden" name="answer_text" required>
+                                                    <trix-editor input="answer_text"></trix-editor>
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
@@ -68,7 +69,7 @@
                             @foreach ($answers as $answer)
                                 <div class="p-3 border border-warning rounded mb-2 d-flex">
                                     <span class="flex-grow-1">
-                                        {{ $answer->answer_text }}
+                                        {!! nl2br($answer->answer_text) !!}
                                     </span>
                                     <form action="{{ route('answers.destroy', $answer->id) }}" method="post">
                                         @csrf
