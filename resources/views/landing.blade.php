@@ -119,11 +119,12 @@
     <div class="container mt-5">
         <div class="row d-flex justify-content-center align-items-center">
             <div class="col-md-8">
+                <div class="mb-3 text-center">
+                    <h3 class="typing" id="welcome-text" style="color: #9a6e1b;"></h3>
+                </div>
                 <form id="regForm" action="{{ route('questions.store.contribution') }}" method="post">
                     @csrf
-                    <div class="mb-3 text-center">
-                        <h3 class="typing" id="welcome-text" style="color: #9a6e1b;"></h3>
-                    </div>
+                    <h3 class="text-center" style="color: #9a6e1b;">Tulis Pertanyaan Kamu</h3>
                     <p class="text-muted text-center">Ayo! Berkontribusi dengan mengirimkan pertanyaan kamu seputar
                         EKAPTA ataupun
                         topik lainnya.</p>
