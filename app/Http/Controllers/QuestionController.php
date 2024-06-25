@@ -52,9 +52,14 @@ class QuestionController extends Controller
         if ($request->user_info) {
             $validatedData['user_info'] = $request->user_info;
         }
-        $question = Question::create($validatedData);
-        Toastr::success(Auth::user() ? 'Pertanyaan berhasil ditambahkan' : 'Terimakasih atas kontribusinya', 'Success', ["positionClass" => "toast-top-right"]);
-        return redirect()->route(Auth::user() ? 'questions.edit' : 'home', $question->id);
+        $question_check = Question::where('question_text', 'like', '%' . $validatedData['question_text'] . '%')->first();
+        if (!$question_check) {
+            $question = Question::create($validatedData);
+            Toastr::success(Auth::user() ? 'Pertanyaan berhasil ditambahkan' : 'Terimakasih atas kontribusinya', 'Success', ["positionClass" => "toast-top-right"]);
+            return redirect()->route(Auth::user() ? 'questions.edit' : 'home', $question->id);
+        }
+        Toastr::success(Auth::user() ? 'Sudah ada pertanyaan yang sama' : 'Terimakasih atas kontribusinya', 'Success', ["positionClass" => "toast-top-right"]);
+        return back();
     }
 
     /**
