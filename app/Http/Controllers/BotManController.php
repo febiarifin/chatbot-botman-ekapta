@@ -7,8 +7,7 @@ use BotMan\BotMan\BotManFactory;
 use BotMan\BotMan\Drivers\DriverManager;
 use Illuminate\Http\Request;
 use App\Models\Question;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
+use Phpml\ModelManager;
 
 class BotManController extends Controller
 {
@@ -19,11 +18,9 @@ class BotManController extends Controller
         $config = [];
         $botman = BotManFactory::create($config);
 
-        $botman->hears('{question}', function (BotMan $bot, $question) {
+        $botman->hears('{params}', function (BotMan $bot, $params) {
             $bot->typesAndWaits(1);
-            // $pattern = '/(https?:\/\/[^\s]+)/';
-            $question = Question::where('question_text', 'like', '%' . $question . '%')->first();
-
+            $question = $this->processParams($params);
             if ($question) {
                 $question->increment('counter');
 
@@ -31,17 +28,13 @@ class BotManController extends Controller
 
                 if (count($answers) != 0) {
                     foreach ($answers as $answer) {
-                        // $answerWithLinks = preg_replace($pattern, '<a href="$1" target="_blank">$1</a>', $answer);
-                        // $bot->reply($answerWithLinks);
                         $bot->reply($answer);
                     }
                 } else {
                     $bot->reply('Maaf, jawabannya tidak tersedia saat ini.');
-                    // $bot->reply($this->askOpenAI($question));
                 }
             } else {
                 $bot->reply('Maaf, jawabannya tidak tersedia saat ini.');
-                // $bot->reply($this->askOpenAI($question));
             }
         });
 
@@ -50,31 +43,67 @@ class BotManController extends Controller
 
     public function askOpenAI($question)
     {
-        $userContent = $question;
-        $apiKey = 'b4e41ee58f804bd4a24b4d6ed24a4897 ';
-        $endpoint = 'https://api.aimlapi.com/chat/completions';
+        $modelManager = new ModelManager();
+        $classifier = $modelManager->restoreFromFile(storage_path('model/mlp_classifier.model'));
 
-        $response = Http::withHeaders([
-            'Authorization' => "Bearer $apiKey",
-            'Content-Type' => 'application/json',
-        ])->post($endpoint, [
-            'model' => 'mistralai/Mistral-7B-Instruct-v0.2',
-            'messages' => [
-                ['role' => 'user', 'content' => $userContent],
-            ],
-            'temperature' => 0.7,
-            'max_tokens' => 128,
-        ]);
+        // Ubah pertanyaan menjadi array kata-kata dan konversi ke float
+        $tokens = explode(' ', $question);
+        $sample = array_map('floatval', $tokens);
 
-        Log::info($response->json());
+        // Prediksi jawaban
+        $prediction = $classifier->predict([$sample]);
+        if ($prediction) {
+            return $prediction;
+        }
+        return 'none';
+    }
 
-        if ($response->successful()) {
-            $responseData = $response->json();
-            $responseText = $responseData['choices'][0]['message']['content'] ?? 'No response text available.';
-        } else {
-            $responseText = 'Failed to get response from API.';
+    function processParams($params)
+    {
+        // Daftar kata tanya 5W1H dan kata umum lainnya
+        $stopWords = [
+            'apa', 'siapa', 'kapan', 'dimana', 'mengapa', 'bagaimana',
+            'cara', 'untuk', 'dan', 'atau', 'yang', 'dari', 'di', 'ke',
+            'pada', 'dengan', 'oleh', 'sebagai', 'saya', 'aku', 'kamu'
+        ];
+
+        // Menghapus semua karakter spesial
+        $params = preg_replace('/[^\w\s]/', '', $params);
+
+        // Pisahkan parameter menjadi array kata
+        $words = explode(' ', strtolower($params));
+
+        // Hapus kata yang ada di daftar stopWords
+        $filteredWords = array_filter($words, function ($word) use ($stopWords) {
+            return !in_array($word, $stopWords);
+        });
+
+        // Mengembalikan kata-kata yang tersisa dalam bentuk array
+        $filteredWords;
+
+        $questionCounts = [];
+        foreach ($filteredWords as $word) {
+            $questions = Question::where('question_text', 'like', '%' . $word . '%')->get();
+
+            foreach ($questions as $question) {
+                $questionId = $question->id;
+
+                if (isset($questionCounts[$questionId])) {
+                    $questionCounts[$questionId]++;
+                } else {
+                    $questionCounts[$questionId] = 1;
+                }
+            }
         }
 
-        return $responseText;
+        arsort($questionCounts); // Mengurutkan berdasarkan nilai tertinggi
+
+        if (!empty($questionCounts)) {
+            $topQuestionId = key($questionCounts); // ID pertanyaan dengan porobabilitas terbanyak
+            $topQuestion = Question::find($topQuestionId); // Ambil objek
+            return $topQuestion;
+        } else {
+            return null;
+        }
     }
 }

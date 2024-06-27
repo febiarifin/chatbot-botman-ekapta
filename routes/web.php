@@ -37,3 +37,4 @@ Route::middleware(['auth'])
     });
 
 Route::get('ask/{question}', [BotManController::class, 'askOpenAI']);
+Route::get('dataset/json', [QuestionController::class, 'dataset_json']);

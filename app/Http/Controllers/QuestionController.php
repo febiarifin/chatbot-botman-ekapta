@@ -135,4 +135,24 @@ class QuestionController extends Controller
     {
         return Excel::download(new QuestionExport, 'EKAPTA_CHATBOT_DATASET.xlsx');
     }
+
+    public function dataset_json()
+    {
+        $questions = Question::with(['answers'])->get();
+        $responses = [];
+        foreach ($questions as $question) {
+            foreach ($question->answers as $answer) {
+                $responses[] = [
+                    'intent' => 'ekapta.sample',
+                    'utterances' => [$question->question_text],
+                    'answers' => [$answer->answer_text],
+                ];
+            }
+        }
+        // return response()->json($responses, 200);
+        $jsonContent = json_encode($responses, JSON_PRETTY_PRINT);
+        header('Content-Type: application/json');
+        header('Content-Disposition: attachment; filename="ekapta.json"');
+        echo $jsonContent;
+    }
 }
