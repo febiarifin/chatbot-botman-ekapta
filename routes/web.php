@@ -35,4 +35,3 @@ Route::middleware(['auth'])
         Route::get('question/export', [QuestionController::class, 'export'])->name('questions.export');
         Route::get('logout', [AuthController::class, 'logout'])->name('logout');
     });
-

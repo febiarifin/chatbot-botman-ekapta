@@ -31,14 +31,43 @@ class BotManController extends Controller
                         $bot->reply($answer);
                     }
                 } else {
-                    $bot->reply('Maaf, jawabannya tidak tersedia saat ini.');
+                    $bot->reply('Maaf, jawabannya tidak tersedia untuk saat ini.');
                 }
             } else {
-                $bot->reply('Maaf, jawabannya tidak tersedia saat ini.');
+                $bot->reply('Maaf, jawabannya tidak tersedia untuk saat ini.');
             }
         });
 
         $botman->listen();
+    }
+
+    public function ask(Request $request)
+    {
+        $question = $this->processParams($request->question);
+        if ($question) {
+            $answers = $question->answers()->pluck('answer_text');
+            if (count($answers) != 0) {
+                $new_answers = [];
+                // foreach ($answers as $answer) {
+                //     $new_answers[] = strip_tags($answer);
+                // }
+                return response()->json([
+                    'messages' => $answers
+                ], 200);
+            } else {
+                return response()->json([
+                    'messages' => [
+                        'Maaf, jawabannya tidak tersedia untuk saat ini.'
+                        ]
+                ], 200);
+            }
+        }else{
+            return response()->json([
+                'messages' => [
+                    'Maaf, jawabannya tidak tersedia untuk saat ini.'
+                    ]
+            ], 200);
+        }
     }
 
     function processParams($params)
