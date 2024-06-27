@@ -41,23 +41,6 @@ class BotManController extends Controller
         $botman->listen();
     }
 
-    public function askOpenAI($question)
-    {
-        $modelManager = new ModelManager();
-        $classifier = $modelManager->restoreFromFile(storage_path('model/mlp_classifier.model'));
-
-        // Ubah pertanyaan menjadi array kata-kata dan konversi ke float
-        $tokens = explode(' ', $question);
-        $sample = array_map('floatval', $tokens);
-
-        // Prediksi jawaban
-        $prediction = $classifier->predict([$sample]);
-        if ($prediction) {
-            return $prediction;
-        }
-        return 'none';
-    }
-
     function processParams($params)
     {
         // Daftar kata tanya 5W1H dan kata umum lainnya

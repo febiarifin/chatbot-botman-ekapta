@@ -36,5 +36,3 @@ Route::middleware(['auth'])
         Route::get('logout', [AuthController::class, 'logout'])->name('logout');
     });
 
-Route::get('ask/{question}', [BotManController::class, 'askOpenAI']);
-Route::get('dataset/json', [QuestionController::class, 'dataset_json']);
