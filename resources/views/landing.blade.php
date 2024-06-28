@@ -158,6 +158,9 @@
             aboutText: 'Write Something',
             introMessage: "✋ Hi! Welcome",
             title: 'EKAPTA ChatBot',
+            bubbleAvatarUrl: '{{ asset('images/message.svg') }}',
+            mainColor: '#93ceef',
+            bubbleBackground: '#93ceef',
         };
     </script>
     <script src="https://cdn.jsdelivr.net/npm/botman-web-widget@0/build/js/widget.js"></script>
