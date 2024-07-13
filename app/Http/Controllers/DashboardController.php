@@ -14,9 +14,11 @@ class DashboardController extends Controller
         $questions = Question::orderBy('counter', 'desc')->take(10)->get();
         $labels = [];
         $datas = [];
+        $urls = [];
         foreach ($questions->shuffle() as $question) {
             $labels[] = substr($question->question_text, 0,5).'...'.substr($question->question_text, - 5);
             $datas[] = $question->counter;
+            $urls[] = route('questions.edit', $question->id);
         }
         $data = [
             'title' => 'Dashboard',
@@ -29,6 +31,7 @@ class DashboardController extends Controller
             ->get(),
             'labels_question' => $labels,
             'datas_question' => $datas,
+            'urls_question' => $urls,
             'counter' => Question::sum('counter'),
         ];
         return view('pages.dashboard.index', $data);

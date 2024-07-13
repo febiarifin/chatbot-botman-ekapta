@@ -83,6 +83,16 @@
                             <canvas id="statisticsChart"></canvas>
                         </div>
                         <div id="myChartLegend"></div>
+                        @for ($i = 0; $i < count($urls_question); $i++)
+                            {{-- <span class="border border-secondary rounded p-1"><a href="{{ $urls_question[$i] }}" target="_blank">{{ $labels_question[$i] }}</a></span> --}}
+                            <a href="{{ $urls_question[$i] }}" class="position-relative" target="blank">
+                                {{ $labels_question[$i] }}
+                                <span
+                                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    {{ $datas_question[$i] }}
+                                </span>
+                            </a> &nbsp; &nbsp;
+                        @endfor
                     </div>
                 </div>
             </div>
@@ -109,14 +119,17 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($questions_new as $question)
-                                    <tr>
-                                        <td>{{ $question->question_text }}</td>
-                                        <td>{{ \Carbon\Carbon::parse($question->created_at)->format('d/m/Y H:i A') }}</td>
-                                        <td>{{ $question->user_info }}</td>
-                                        <td>
-                                            <a href="{{ route('questions.edit', $question->id) }}" class="btn btn-primary btn-sm"> Buat Jawaban <i class="fas fa-arrow-right"></i></a>
-                                        </td>
-                                    </tr>
+                                        <tr>
+                                            <td>{{ $question->question_text }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($question->created_at)->format('d/m/Y H:i A') }}
+                                            </td>
+                                            <td>{{ $question->user_info }}</td>
+                                            <td>
+                                                <a href="{{ route('questions.edit', $question->id) }}"
+                                                    class="btn btn-primary btn-sm"> Buat Jawaban <i
+                                                        class="fas fa-arrow-right"></i></a>
+                                            </td>
+                                        </tr>
                                     @endforeach
                                 </tbody>
                             </table>

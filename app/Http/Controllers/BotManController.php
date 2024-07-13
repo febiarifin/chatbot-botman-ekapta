@@ -7,6 +7,7 @@ use BotMan\BotMan\BotManFactory;
 use BotMan\BotMan\Drivers\DriverManager;
 use Illuminate\Http\Request;
 use App\Models\Question;
+use Illuminate\Support\Facades\Http;
 use Phpml\ModelManager;
 
 class BotManController extends Controller
@@ -36,6 +37,13 @@ class BotManController extends Controller
             } else {
                 $bot->reply('Maaf, jawabannya tidak tersedia untuk saat ini.');
             }
+
+            // $url = 'https://011c-34-75-179-125.ngrok-free.app/ask';
+            // $response = Http::post($url, [
+            //     'question' => $params
+            // ]);
+            // $data = $response->json();
+            // $bot->reply($data['answer']);
         });
 
         $botman->listen();
@@ -117,5 +125,25 @@ class BotManController extends Controller
         } else {
             return null;
         }
+    }
+
+    public function dataset()
+    {
+        $questions = Question::all();
+        $responses = [];
+        foreach ($questions as $question) {
+            $class = preg_replace('/[^a-zA-Z0-9]/', '', $question->question_text);
+            foreach ($question->answers as $answer) {
+                $responses[] = [
+                    'class' => strtolower($class),
+                    'sentences' => [$question->question_text],
+                    'responses' => [$answer->answer_text],
+                ];
+            }
+        }
+
+        return response()->json([
+            'data' => $responses
+        ], 200);
     }
 }

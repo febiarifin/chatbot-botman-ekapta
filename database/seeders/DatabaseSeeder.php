@@ -20,19 +20,19 @@ class DatabaseSeeder extends Seeder
     {
         User::create([
             'name' => 'Admin',
-            'email' => 'admin@admin.com',
+            'email' => 'admin@gmail.com',
             'password' => Hash::make('123456'),
         ]);
-        $question = Question::create(['question_text' => 'What is Laravel?']);
-        $question->answers()->createMany([
-            ['answer_text' => 'Laravel is a PHP framework.'],
-            ['answer_text' => 'It is used for web development.']
-        ]);
+        // $question = Question::create(['question_text' => 'What is Laravel?']);
+        // $question->answers()->createMany([
+        //     ['answer_text' => 'Laravel is a PHP framework.'],
+        //     ['answer_text' => 'It is used for web development.']
+        // ]);
 
-        $question = Question::create(['question_text' => 'What is PHP?']);
-        $question->answers()->createMany([
-            ['answer_text' => 'PHP is a programming language.'],
-            ['answer_text' => 'It stands for Hypertext Preprocessor.']
-        ]);
+        // $question = Question::create(['question_text' => 'What is PHP?']);
+        // $question->answers()->createMany([
+        //     ['answer_text' => 'PHP is a programming language.'],
+        //     ['answer_text' => 'It stands for Hypertext Preprocessor.']
+        // ]);
     }
 }
