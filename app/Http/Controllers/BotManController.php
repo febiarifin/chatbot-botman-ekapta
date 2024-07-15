@@ -21,29 +21,41 @@ class BotManController extends Controller
 
         $botman->hears('{params}', function (BotMan $bot, $params) {
             $bot->typesAndWaits(1);
-            $question = $this->processParams($params);
-            if ($question) {
-                $question->increment('counter');
 
-                $answers = $question->answers()->pluck('answer_text');
+            // $question = $this->processParams($params);
+            // if ($question) {
+            //     $question->increment('counter');
 
-                if (count($answers) != 0) {
-                    foreach ($answers as $answer) {
-                        $bot->reply($answer);
+            //     $answers = $question->answers()->pluck('answer_text');
+
+            //     if (count($answers) != 0) {
+            //         foreach ($answers as $answer) {
+            //             $bot->reply($answer);
+            //         }
+            //     } else {
+            //         $bot->reply('Maaf, jawabannya tidak tersedia untuk saat ini.');
+            //     }
+            // } else {
+            //     $bot->reply('Maaf, jawabannya tidak tersedia untuk saat ini.');
+            // }
+
+            $url = 'https://3eee-34-81-238-159.ngrok-free.app/ask';
+            $response = Http::post($url, [
+                'question' => $params
+            ]);
+
+            if ($response->successful()) {
+                $data = $response->json();
+                if (isset($data['responses'])) {
+                    foreach ($data['responses'] as $responseMessage) {
+                        $bot->reply($responseMessage);
                     }
                 } else {
-                    $bot->reply('Maaf, jawabannya tidak tersedia untuk saat ini.');
+                    $bot->reply("Maaf, jawaban tidak tersedia untuk saat ini");
                 }
             } else {
-                $bot->reply('Maaf, jawabannya tidak tersedia untuk saat ini.');
+                $bot->reply("Terjadi kesalahan saat menghubungi server.");
             }
-
-            // $url = 'https://011c-34-75-179-125.ngrok-free.app/ask';
-            // $response = Http::post($url, [
-            //     'question' => $params
-            // ]);
-            // $data = $response->json();
-            // $bot->reply($data['answer']);
         });
 
         $botman->listen();
